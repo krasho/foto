@@ -1,10 +1,4 @@
 <?php
-
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use \App\Post;
-
 class ShowPostTest extends FeatureTestCase
 {
     function test_a_user_can_see_the_post_detail()
@@ -14,9 +8,10 @@ class ShowPostTest extends FeatureTestCase
             'name' => 'Jose Luis'
         ]);
 
-        $post = factory(Post::class)->make([
+        $post = $this->createPost([
             'title' => 'Como instalar Laravel',
-            'content'=> 'Este es el contenido del post'
+            'content'=> 'Este es el contenido del post',
+            'user_id' => $user->id,
         ]);
 
 
@@ -27,21 +22,17 @@ class ShowPostTest extends FeatureTestCase
         $this->visit($post->url)
               ->seeInElement('h1', $post->title)
               ->see($post->content)
-              ->see($post->name);
+              ->see('Jose Luis');
 
     }
 
     function test_old_urls_are_redirected()
     {
         //Having
-        $user = $this->defaultUser();
-
-        $post = factory(Post::class)->make([
+        $post = $this->createPost([
             'title' => 'Old Title',
         ]);
 
-
-        $user->posts()->save($post);
 
         $url = $post->url;
 
