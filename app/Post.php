@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use \App\User;
 use Illuminate\Support\Str;
 
 class Post extends Model
@@ -16,6 +15,11 @@ class Post extends Model
        return $this->belongsTo(User::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
@@ -26,4 +30,6 @@ class Post extends Model
     {
         return route('posts.show',[$this->id, $this->slug]);
     }
+
+
 }
