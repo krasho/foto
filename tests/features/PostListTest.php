@@ -1,5 +1,7 @@
 <?php
 
+use App\Post;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class PostListTest extends FeatureTestCase
@@ -16,5 +18,36 @@ class PostListTest extends FeatureTestCase
              ->see($post->title)
              ->click($post->title)
              ->seePageIs($post->url);
+    }
+
+
+    function test_the_post_are_paginated()
+    {
+        //Having
+        $first = factory(Post::class)->create([
+            'title' => 'Post mas antiguo',
+            'created_at' => Carbon::now()->subDays(2)
+
+        ]);
+
+        factory(Post::class)->times(15)->create([
+            'created_at'=>Carbon::now()->subDay(1)
+        ]);
+
+
+        $last = factory(Post::class)->create([
+            'title' => 'Post mas reciente',
+            'created_at' => Carbon::now()
+
+        ]);
+
+
+        $this->visit('/')
+             ->see($last->title)
+             ->dontSee($first->title)
+             ->click('2')
+             ->see($first->title)
+             ->dontSee($last->title);
+
     }
 }

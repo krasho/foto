@@ -11,5 +11,5 @@
           </li>
       @endforeach
   </ul>
-
+  {{$posts->render()}}
 @endsection
